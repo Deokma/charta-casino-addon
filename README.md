@@ -42,7 +42,7 @@ ChartaAddonRegistry.registerMenu("texas_holdem", TexasHoldemMenu::new,
     () -> AbstractCardMenu.Definition.STREAM_CODEC);
 ```
 
-See [ADDON_GUIDE.md](https://github.com/lucaargolo/charta/blob/main/ADDON_GUIDE.md) for full documentation.
+See [ADDON_GUIDE.md](https://github.com/Deokma/charta-casino-addon/blob/main/ADDON_GUIDE.md) for full documentation.
 
 ## License
 
