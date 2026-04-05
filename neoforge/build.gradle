@@ -1,0 +1,69 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
+}
+
+def chartaJar = rootProject.file(charta_neoforge_jar)
+
+neoForge {
+    version = neoforge_version
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+    runs {
+        configureEach {
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
+        }
+        client { client() }
+        server { server() }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    compileOnly files(chartaJar)
+}
+
+// Copy Charta NeoForge jar into run/mods before each run
+tasks.register('copyChartaJar', Copy) {
+    from chartaJar
+    into layout.projectDirectory.dir('run/mods')
+}
+
+afterEvaluate {
+    tasks.matching { it.name.startsWith('run') }.configureEach {
+        dependsOn 'copyChartaJar'
+    }
+}
+
+// Remove charta-common from compile classpath to avoid duplicate package conflict
+tasks.named('compileJava', JavaCompile) {
+    doFirst {
+        classpath = classpath.filter { f -> !f.name.startsWith('charta-common') }
+    }
+}
+
+tasks.named('compileJava') {
+    inputs.file(chartaJar)
+}
+
+// Patch ignoreList to exclude charta-common from module system
+tasks.matching { it.name.startsWith('write') && it.name.contains('LegacyClasspath') }.configureEach {
+    doLast {
+        ['clientRunVmArgs.txt', 'serverRunVmArgs.txt'].each { fname ->
+            def f = file("build/moddev/$fname")
+            if (f.exists()) {
+                def content = f.text
+                content = content.replaceAll(/-DignoreList=([^\n]*)/) { match, list ->
+                    "-DignoreList=${list},charta-common"
+                }
+                f.text = content
+            }
+        }
+    }
+}

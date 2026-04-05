@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": ["${mod_author}"],
+  "license": "${license}",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabric"],
+    "client": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabricClient"]
+  },
+  "mixins": [],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=${java_version}",
+    "charta": "*"
+  }
+}
