@@ -1,6 +1,7 @@
 {
   "charta.blackjack": "Blackjack",
   "charta.texas_holdem": "Texas Hold'em",
+  "charta.durak": "Durak",
   "rule.charta_casino.blackjack.starting_chips": "Starting Chips",
   "rule.charta_casino.blackjack.starting_chips.description": "Starting chips for each player (×100).",
   "rule.charta_casino.blackjack.min_bet": "Min Bet",
@@ -51,5 +52,20 @@
   "message.charta_casino.texas_holdem.hand_name": "with %s",
   "message.charta_casino.texas_holdem.showdown_result": "%s won %s♦ with %s",
   "message.charta_casino.texas_holdem.chips_remaining": "Chips: %s",
-  "message.charta_casino.texas_holdem.posted_blind": "Posted blind: %s"
+  "message.charta_casino.texas_holdem.posted_blind": "Posted blind: %s",
+
+  "message.charta_casino.durak.game_started": "Game started! Shuffle up and deal.",
+  "message.charta_casino.durak.trump_is": "Trump suit: %s",
+  "message.charta_casino.durak.attacked": "Attacked",
+  "message.charta_casino.durak.defended": "Defended",
+  "message.charta_casino.durak.takes": "Takes the cards!",
+  "message.charta_casino.durak.pass": "Pass",
+  "message.charta_casino.durak.out": "Out of cards — not the Durak!",
+  "message.charta_casino.durak.you_are_durak": "You are the Durak!",
+  "message.charta_casino.durak.durak_subtitle": "Better luck next time.",
+  "message.charta_casino.durak.not_durak": "%s is the Durak!",
+  "message.charta_casino.durak.durak_is": "%s is the Durak!",
+
+  "button.charta_casino.durak.pass": "Pass",
+  "button.charta_casino.durak.take": "Take"
 }
