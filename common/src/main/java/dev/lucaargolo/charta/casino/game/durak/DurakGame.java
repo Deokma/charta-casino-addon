@@ -18,6 +18,7 @@ import dev.lucaargolo.charta.common.registry.ModMenuTypeRegistry;
 import dev.lucaargolo.charta.common.sound.ModSounds;
 import dev.lucaargolo.charta.common.utils.CardImage;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -101,16 +102,18 @@ public class DurakGame extends Game<DurakGame, DurakMenu> {
         });
 
         // Attack / defense slot pairs spread across the table
-        float startX = tw / 2f - (MAX_TABLE * (cw + 4f)) / 2f;
-        float atkY   = th / 2f - ch - 6f;
-        float defY   = th / 2f + 6f;
+        // Each slot holds exactly 1 card — no stacking needed
+        float startX = tw / 2f - (MAX_TABLE * (cw + 8f)) / 2f;
+        float atkY   = th / 2f - ch - ch / 2f;   // attack row above centre
+        float defY   = th / 2f + ch / 2f;         // defense row below centre (full card height gap)
         for (int i = 0; i < MAX_TABLE; i++) {
-            float x = startX + i * (cw + 4f);
-            atkSlots[i] = addSlot(new GameSlot(new LinkedList<>(), x, atkY, 0f, 0f) {
+            float x = startX + i * (cw + 8f);
+            // Use Direction.UP with maxStack=0 so cards don't offset each other (single-card slots)
+            atkSlots[i] = addSlot(new GameSlot(new LinkedList<>(), x, atkY, 0f, 0f, Direction.UP, 0f) {
                 @Override public boolean canInsertCard(CardPlayer p, List<Card> c, int idx) { return false; }
                 @Override public boolean canRemoveCard(CardPlayer p, int idx)               { return false; }
             });
-            defSlots[i] = addSlot(new GameSlot(new LinkedList<>(), x, defY, 0f, 0f) {
+            defSlots[i] = addSlot(new GameSlot(new LinkedList<>(), x, defY, 0f, 0f, Direction.UP, 0f) {
                 @Override public boolean canInsertCard(CardPlayer p, List<Card> c, int idx) { return false; }
                 @Override public boolean canRemoveCard(CardPlayer p, int idx)               { return false; }
             });
@@ -144,6 +147,21 @@ public class DurakGame extends Game<DurakGame, DurakMenu> {
     @Override public List<GameOption<?>> getOptions() { return List.of(); }
     @Override public int getMinPlayers() { return 2; }
     @Override public int getMaxPlayers() { return 6; }
+
+    /**
+     * Override hand slot to use horizontal layout (like CrazyEights/Fun)
+     * so cards spread out side-by-side instead of stacking like Solitaire.
+     */
+    @Override
+    protected GameSlot createPlayerHand(CardPlayer player) {
+        return new GameSlot(player.hand(),
+                0f, 0f, 0f, 0f,
+                net.minecraft.core.Direction.EAST,
+                CardTableBlockEntity.TABLE_WIDTH) {
+            @Override
+            public boolean removeAll() { return false; }
+        };
+    }
 
     // ── startGame ─────────────────────────────────────────────────────────────
 
