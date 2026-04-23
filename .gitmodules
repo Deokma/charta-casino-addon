@@ -1,0 +1,3 @@
+[submodule "libs/charta"]
+	path = libs/charta
+	url = https://github.com/lucaargolo/charta.git

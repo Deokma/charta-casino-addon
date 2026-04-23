@@ -32,9 +32,21 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    // Charta common jar for compilation
-    compileOnly files(rootProject.file(charta_jar))
+    // Charta common — built from submodule (libs/charta).
+    compileOnly files(rootProject.chartaJar('common'))
+}
 
-    // Charta Fabric jar loaded as a mod in dev environment
-    modLocalRuntime files(rootProject.file(charta_fabric_jar))
+// Ensure Charta Fabric jar is built before our compile/remap tasks
+// (needed when running the dev client — place jar in runs/client/mods manually or via copyChartaFabricJar)
+tasks.register('copyChartaFabricJar', Copy) {
+    dependsOn rootProject.tasks.named('buildCharta')
+    from rootProject.chartaJar('fabric')
+    into layout.projectDirectory.dir('runs/client/mods')
+}
+
+// Automatically copy Charta jar before running the client
+afterEvaluate {
+    tasks.matching { it.name == 'runClient' || it.name == 'runServer' }.configureEach {
+        dependsOn 'copyChartaFabricJar'
+    }
 }
