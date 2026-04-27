@@ -32,9 +32,5 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    // Charta common jar for compilation
-    compileOnly files(rootProject.file(charta_jar))
-
-    // Charta Fabric jar loaded as a mod in dev environment
-    modLocalRuntime files(rootProject.file(charta_fabric_jar))
+    modImplementation "dev.lucaargolo:charta-fabric-1.21.1:${charta_version}"
 }

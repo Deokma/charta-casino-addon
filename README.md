@@ -1,48 +1,33 @@
 # Charta Casino Addon
 
-A reference addon for [Charta](https://github.com/lucaargolo/charta) that adds **Blackjack** and **Texas Hold'em** as standalone card games using the Charta Addon API.
+A reference addon for [Charta](https://github.com/lucaargolo/charta) that adds **Blackjack** and **Texas Hold'em** as standalone card games for both Fabric and NeoForge.
 
 ## Games
 
-- **Blackjack** — bet, hit, stand, double down. Dealer auto-plays at 17+.
-- **Texas Hold'em** — full poker with blinds, betting rounds (pre-flop → flop → turn → river → showdown), side pots, and 3D chip stacks on the table block.
+- **Blackjack**: betting, hit, stand, double down, dealer autoplay, and table-side chip tracking.
+- **Texas Hold'em**: blinds, betting rounds, side pots, all-in support, showdown evaluation, and 3D chip stacks rendered on the card table.
 
 ## Requirements
 
 - Minecraft 1.21.1
-- [Charta](https://github.com/lucaargolo/charta) 1.3.0+
-- Fabric Loader 0.17.3+ **or** NeoForge 21.1.212+
+- Java 21
+- Charta 1.2.1
+- Fabric Loader 0.17.3+ with Fabric API 0.116.7+1.21.1, or NeoForge 21.1.212+
 
 ## Building
 
 ```bash
-# 1. Build the base Charta mod first
-cd /path/to/charta
-./gradlew :common:jar :neoforge:jar :fabric:remapJar
-
-# 2. Build this addon
-cd /path/to/charta-casino-addon
 ./gradlew build
 ```
 
-The built jars will be in `neoforge/build/libs/` and `fabric/build/libs/`.
+Artifacts are written to:
 
-## How it works
+- `fabric/build/libs/`
+- `neoforge/build/libs/`
 
-This addon uses the `ChartaAddonRegistry` API introduced in Charta 1.3.0:
+## Charta Addons
 
-```java
-// CasinoAddon.java
-ChartaAddonRegistry.registerGame("blackjack",    () -> BlackjackGame::new);
-ChartaAddonRegistry.registerGame("texas_holdem", () -> TexasHoldemGame::new);
-
-ChartaAddonRegistry.registerMenu("blackjack",    BlackjackMenu::new,
-    () -> AbstractCardMenu.Definition.STREAM_CODEC);
-ChartaAddonRegistry.registerMenu("texas_holdem", TexasHoldemMenu::new,
-    () -> AbstractCardMenu.Definition.STREAM_CODEC);
-```
-
-See [ADDON_GUIDE.md](https://github.com/Deokma/charta-casino-addon/blob/main/ADDON_GUIDE.md) for full documentation.
+See `ADDON_GUIDE.md` for a loader-aware walkthrough of how to structure a Charta addon with the current API.
 
 ## License
 
