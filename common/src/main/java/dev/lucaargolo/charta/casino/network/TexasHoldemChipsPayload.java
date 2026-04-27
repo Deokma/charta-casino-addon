@@ -1,5 +1,6 @@
 package dev.lucaargolo.charta.casino.network;
 
+import dev.lucaargolo.charta.casino.client.CasinoClientPayloadHandlers;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -8,6 +9,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.Executor;
 
 /**
  * Broadcast from server to all chunk watchers carrying Texas Hold'em chip state.
@@ -39,14 +42,22 @@ public record TexasHoldemChipsPayload(
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TexasHoldemChipsPayload> STREAM_CODEC =
             StreamCodec.composite(
-                    BlockPos.STREAM_CODEC,    TexasHoldemChipsPayload::pos,
-                    INT_ARRAY_CODEC,          TexasHoldemChipsPayload::chips,
-                    ByteBufCodecs.INT,        TexasHoldemChipsPayload::foldedMask,
-                    ByteBufCodecs.INT,        TexasHoldemChipsPayload::allInMask,
-                    ByteBufCodecs.INT,        TexasHoldemChipsPayload::startingChips,
-                    ByteBufCodecs.INT,        TexasHoldemChipsPayload::gameSlotCount,
+                    BlockPos.STREAM_CODEC, TexasHoldemChipsPayload::pos,
+                    INT_ARRAY_CODEC, TexasHoldemChipsPayload::chips,
+                    ByteBufCodecs.INT, TexasHoldemChipsPayload::foldedMask,
+                    ByteBufCodecs.INT, TexasHoldemChipsPayload::allInMask,
+                    ByteBufCodecs.INT, TexasHoldemChipsPayload::startingChips,
+                    ByteBufCodecs.INT, TexasHoldemChipsPayload::gameSlotCount,
                     TexasHoldemChipsPayload::new
             );
+
+    public static void handleClient(TexasHoldemChipsPayload payload, Executor executor) {
+        executor.execute(() -> CasinoClientPayloadHandlers.handleTexasHoldemChips(payload));
+    }
+
+    public static void handleClient(TexasHoldemChipsPayload payload) {
+        CasinoClientPayloadHandlers.handleTexasHoldemChips(payload);
+    }
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }

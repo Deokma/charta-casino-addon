@@ -2,7 +2,6 @@ package dev.lucaargolo.charta.casino.network;
 
 import dev.lucaargolo.charta.casino.game.blackjack.BlackjackGame;
 import dev.lucaargolo.charta.casino.game.blackjack.BlackjackMenu;
-import dev.lucaargolo.charta.common.ChartaMod;
 import dev.lucaargolo.charta.common.game.api.CardPlayer;
 import dev.lucaargolo.charta.common.game.api.GamePlay;
 import dev.lucaargolo.charta.mixed.LivingEntityMixed;
@@ -28,36 +27,36 @@ public record BlackjackActionPayload(int action) implements CustomPacketPayload 
                     BlackjackActionPayload::new);
 
     public static void handleServer(BlackjackActionPayload payload, ServerPlayer player, Executor executor) {
-        executor.execute(() -> {
-            if (!(player.containerMenu instanceof BlackjackMenu menu)) return;
+        executor.execute(() -> handleServer(payload, player));
+    }
 
-            CardPlayer cardPlayer = ((LivingEntityMixed) player).charta_getCardPlayer();
-            BlackjackGame game = menu.getGame();
-            int idx = game.getPlayers().indexOf(cardPlayer);
-            if (idx < 0) return;
+    public static void handleServer(BlackjackActionPayload payload, ServerPlayer player) {
+        if (!(player.containerMenu instanceof BlackjackMenu menu)) return;
 
-            int action = payload.action();
+        CardPlayer cardPlayer = ((LivingEntityMixed) player).charta_getCardPlayer();
+        BlackjackGame game = menu.getGame();
+        int idx = game.getPlayers().indexOf(cardPlayer);
+        if (idx < 0) return;
 
-            // BET: handled directly — doesn't need currentPlayer check
-            if (action >= BlackjackGame.ACTION_BET) {
-                if (game.getPhase() == BlackjackGame.Phase.BETTING) {
-                    game.handleBet(idx, action - BlackjackGame.ACTION_BET);
-                }
-                return;
+        int action = payload.action();
+        if (action >= BlackjackGame.ACTION_BET) {
+            if (game.getPhase() == BlackjackGame.Phase.BETTING) {
+                game.handleBet(idx, action - BlackjackGame.ACTION_BET);
             }
+            return;
+        }
 
-            // HIT/STAND/DOUBLE: only current player
-            if (game.getCurrentPlayer() != cardPlayer) return;
+        if (game.getCurrentPlayer() != cardPlayer) return;
 
-            boolean valid = action == BlackjackGame.ACTION_HIT
-                    || action == BlackjackGame.ACTION_STAND
-                    || action == BlackjackGame.ACTION_DOUBLE;
-            if (!valid) return;
+        boolean valid = action == BlackjackGame.ACTION_HIT
+                || action == BlackjackGame.ACTION_STAND
+                || action == BlackjackGame.ACTION_DOUBLE;
+        if (!valid) return;
 
-            cardPlayer.play(new GamePlay(List.of(), action));
-        });
+        cardPlayer.play(new GamePlay(List.of(), action));
     }
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 }
+

@@ -66,7 +66,7 @@ public class BlackjackMenu extends AbstractCardMenu<BlackjackGame, BlackjackMenu
     public static final float DEALER_Y        = 70f;
 
     public BlackjackMenu(int containerId, Inventory inventory, Definition definition) {
-        super(CasinoAddon.BLACKJACK_MENU.get().get(), containerId, inventory, definition);
+        super(CasinoAddon.BLACKJACK_MENU.get(), containerId, inventory, definition);
         // Player previews
         {
             float slotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 28f;
@@ -122,7 +122,7 @@ public class BlackjackMenu extends AbstractCardMenu<BlackjackGame, BlackjackMenu
     }
 
     @Override
-    public GameType<BlackjackGame, BlackjackMenu> getGameType() { return CasinoAddon.BLACKJACK_GAME.get().get(); }
+    public GameType<BlackjackGame, BlackjackMenu> getGameType() { return CasinoAddon.BLACKJACK_GAME.get(); }
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) { return ItemStack.EMPTY; }
@@ -132,3 +132,4 @@ public class BlackjackMenu extends AbstractCardMenu<BlackjackGame, BlackjackMenu
         return this.game != null && this.cardPlayer != null && !this.game.isGameOver();
     }
 }
+

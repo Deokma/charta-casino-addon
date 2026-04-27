@@ -100,7 +100,7 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
     @Override
     public ModMenuTypeRegistry.AdvancedMenuTypeEntry<BlackjackMenu, AbstractCardMenu.Definition> getMenuType() {
         if (MENU_TYPE_ENTRY_OVERRIDE != null) return MENU_TYPE_ENTRY_OVERRIDE.get();
-        return CasinoAddon.BLACKJACK_MENU.get();
+        return CasinoAddon.BLACKJACK_MENU;
     }
     @Override
     public BlackjackMenu createMenu(int containerId, Inventory playerInventory, AbstractCardMenu.Definition definition) {
@@ -501,3 +501,4 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
 
     public int getStartingChipsPublic() { return startingChips(); }
 }
+

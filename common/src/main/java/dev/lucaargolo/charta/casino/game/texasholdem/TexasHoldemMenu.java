@@ -71,7 +71,7 @@ public class TexasHoldemMenu extends AbstractCardMenu<TexasHoldemGame, TexasHold
     };
 
     public TexasHoldemMenu(int containerId, Inventory inventory, Definition definition) {
-        super(CasinoAddon.TEXAS_HOLDEM_MENU.get().get(), containerId, inventory, definition);
+        super(CasinoAddon.TEXAS_HOLDEM_MENU.get(), containerId, inventory, definition);
 
         // Player hand previews
         {
@@ -125,7 +125,7 @@ public class TexasHoldemMenu extends AbstractCardMenu<TexasHoldemGame, TexasHold
     }
 
     @Override
-    public GameType<TexasHoldemGame, TexasHoldemMenu> getGameType() { return CasinoAddon.TEXAS_HOLDEM_GAME.get().get(); }
+    public GameType<TexasHoldemGame, TexasHoldemMenu> getGameType() { return CasinoAddon.TEXAS_HOLDEM_GAME.get(); }
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) { return ItemStack.EMPTY; }
@@ -135,3 +135,4 @@ public class TexasHoldemMenu extends AbstractCardMenu<TexasHoldemGame, TexasHold
         return this.game != null && this.cardPlayer != null && !this.game.isGameOver();
     }
 }
+

@@ -29,30 +29,33 @@ public record TexasHoldemActionPayload(int action) implements CustomPacketPayloa
                     TexasHoldemActionPayload::new);
 
     public static void handleServer(TexasHoldemActionPayload payload, ServerPlayer player, Executor executor) {
-        executor.execute(() -> {
-            if (!(player.containerMenu instanceof TexasHoldemMenu menu)) return;
+        executor.execute(() -> handleServer(payload, player));
+    }
 
-            CardPlayer cardPlayer = ((LivingEntityMixed) player).charta_getCardPlayer();
-            TexasHoldemGame game = menu.getGame();
+    public static void handleServer(TexasHoldemActionPayload payload, ServerPlayer player) {
+        if (!(player.containerMenu instanceof TexasHoldemMenu menu)) return;
 
-            if (game.getCurrentPlayer() != cardPlayer) return;
+        CardPlayer cardPlayer = ((LivingEntityMixed) player).charta_getCardPlayer();
+        TexasHoldemGame game = menu.getGame();
 
-            int action = payload.action();
-            boolean valid = action == TexasHoldemGame.ACTION_FOLD
-                    || action == TexasHoldemGame.ACTION_CALL
-                    || action == TexasHoldemGame.ACTION_RAISE_MIN
-                    || action == TexasHoldemGame.ACTION_ALL_IN
-                    || action >= TexasHoldemGame.ACTION_RAISE_CUSTOM;
-            if (!valid) {
-                ChartaMod.LOGGER.warn("TexasHoldemActionPayload: unknown action {} from {}",
-                        action, player.getName().getString());
-                return;
-            }
+        if (game.getCurrentPlayer() != cardPlayer) return;
 
-            cardPlayer.play(new GamePlay(List.of(), action));
-        });
+        int action = payload.action();
+        boolean valid = action == TexasHoldemGame.ACTION_FOLD
+                || action == TexasHoldemGame.ACTION_CALL
+                || action == TexasHoldemGame.ACTION_RAISE_MIN
+                || action == TexasHoldemGame.ACTION_ALL_IN
+                || action >= TexasHoldemGame.ACTION_RAISE_CUSTOM;
+        if (!valid) {
+            ChartaMod.LOGGER.warn("TexasHoldemActionPayload: unknown action {} from {}",
+                    action, player.getName().getString());
+            return;
+        }
+
+        cardPlayer.play(new GamePlay(List.of(), action));
     }
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
 }
+

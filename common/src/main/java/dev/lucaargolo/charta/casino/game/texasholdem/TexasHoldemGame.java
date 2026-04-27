@@ -108,7 +108,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
 
     @Override
     public ModMenuTypeRegistry.AdvancedMenuTypeEntry<TexasHoldemMenu, AbstractCardMenu.Definition> getMenuType() {
-        return CasinoAddon.TEXAS_HOLDEM_MENU.get();
+        return CasinoAddon.TEXAS_HOLDEM_MENU;
     }
 
     @Override
@@ -577,3 +577,4 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
 //        public static final PokerPhase SHOWDOWN = PokerPhase.SHOWDOWN;
 //    }
 }
+
