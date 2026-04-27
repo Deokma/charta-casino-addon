@@ -8,8 +8,8 @@
   "license": "${license}",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabric"],
-    "client": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabricClient"]
+    "main": ["by.deokma.casino.fabric.CasinoAddonFabric"],
+    "client": ["by.deokma.casino.fabric.CasinoAddonFabricClient"]
   },
   "mixins": [],
   "depends": {
