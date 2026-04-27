@@ -18,5 +18,8 @@
     "minecraft": "~1.21.1",
     "java": ">=${java_version}",
     "charta": "*"
+  },
+  "after": {
+    "charta": "*"
   }
 }

@@ -2,36 +2,3 @@ plugins {
     id 'fabric-loom' version '1.11-SNAPSHOT' apply false
     id 'net.neoforged.moddev' version '2.0.115' apply false
 }
-
-// Helper to get the built jar path for a charta subproject
-ext.chartaJar = { String subproject ->
-    def mc = findProperty('minecraft_version') ?: '1.21.1'
-    def ver = findProperty('charta_version') ?: '1.3.0'
-    return file("libs/charta/${subproject}/build/libs/charta-${subproject}-${mc}-${ver}.jar")
-}
-
-// Build Charta from the submodule before our subprojects compile.
-// Runs: ./gradlew :common:jar :neoforge:jar :fabric:remapJar inside libs/charta
-tasks.register('buildCharta', Exec) {
-    workingDir file('libs/charta')
-    def gradlew = System.getProperty('os.name').toLowerCase().contains('windows') ? 'gradlew.bat' : './gradlew'
-    commandLine gradlew, ':common:jar', ':neoforge:jar', ':fabric:remapJar', '--no-daemon'
-    outputs.files(
-        chartaJar('common'),
-        chartaJar('neoforge'),
-        chartaJar('fabric')
-    )
-    // Only re-run if the submodule sources change
-    inputs.dir file('libs/charta/common/src')
-    inputs.dir file('libs/charta/fabric/src')
-    inputs.dir file('libs/charta/neoforge/src')
-}
-
-// Make all subproject compileJava tasks depend on buildCharta
-subprojects {
-    afterEvaluate {
-        tasks.matching { it.name == 'compileJava' }.configureEach {
-            dependsOn rootProject.tasks.named('buildCharta')
-        }
-    }
-}

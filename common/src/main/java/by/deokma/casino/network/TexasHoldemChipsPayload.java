@@ -61,10 +61,4 @@ public record TexasHoldemChipsPayload(
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() { return TYPE; }
-
-    public static void handleClient(TexasHoldemChipsPayload payload, Executor executor) {
-        executor.execute(() -> {
-            dev.lucaargolo.charta.casino.client.CasinoClientPayloadHandlers.handleTexasHoldemChips(payload);
-        });
-    }
 }
