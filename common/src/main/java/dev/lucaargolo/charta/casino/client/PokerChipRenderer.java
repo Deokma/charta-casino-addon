@@ -9,6 +9,7 @@ import dev.lucaargolo.charta.common.game.api.GameSlot;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -163,9 +164,43 @@ public final class PokerChipRenderer {
                                  float x2, float y2, float z2,
                                  float x3, float y3, float z3,
                                  float r, float g, float b, float a, int light) {
-        vc.addVertex(e.pose(), x0, y0, z0).setColor(r, g, b, a).setLight(light);
-        vc.addVertex(e.pose(), x1, y1, z1).setColor(r, g, b, a).setLight(light);
-        vc.addVertex(e.pose(), x2, y2, z2).setColor(r, g, b, a).setLight(light);
-        vc.addVertex(e.pose(), x3, y3, z3).setColor(r, g, b, a).setLight(light);
+        float ux = x1 - x0;
+        float uy = y1 - y0;
+        float uz = z1 - z0;
+        float vx = x2 - x0;
+        float vy = y2 - y0;
+        float vz = z2 - z0;
+        float nx = uy * vz - uz * vy;
+        float ny = uz * vx - ux * vz;
+        float nz = ux * vy - uy * vx;
+        float len = Mth.sqrt(nx * nx + ny * ny + nz * nz);
+        if (len > 1.0e-6f) {
+            nx /= len;
+            ny /= len;
+            nz /= len;
+        } else {
+            nx = 0f;
+            ny = 0f;
+            nz = 1f;
+        }
+
+        addVertex(e, vc, x0, y0, z0, 0f, 0f, r, g, b, a, light, nx, ny, nz);
+        addVertex(e, vc, x1, y1, z1, 1f, 0f, r, g, b, a, light, nx, ny, nz);
+        addVertex(e, vc, x2, y2, z2, 1f, 1f, r, g, b, a, light, nx, ny, nz);
+        addVertex(e, vc, x3, y3, z3, 0f, 1f, r, g, b, a, light, nx, ny, nz);
+    }
+
+    private static void addVertex(PoseStack.Pose pose, VertexConsumer vc,
+                                  float x, float y, float z,
+                                  float u, float v,
+                                  float r, float g, float b, float a,
+                                  int light,
+                                  float nx, float ny, float nz) {
+        vc.addVertex(pose.pose(), x, y, z)
+                .setColor(r, g, b, a)
+                .setUv(u, v)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(light)
+                .setNormal(pose, nx, ny, nz);
     }
 }

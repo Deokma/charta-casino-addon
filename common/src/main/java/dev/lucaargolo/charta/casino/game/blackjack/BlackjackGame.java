@@ -67,6 +67,22 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
     private int startingChips() { return STARTING_CHIPS_OPT.get() * 100; }
     private int minBet()        { return MIN_BET_OPT.get(); }
 
+    private void ensureCurrentPlayer() {
+        if (players.isEmpty()) return;
+        if (currentPlayer != null && players.contains(currentPlayer)) return;
+
+        int idx = Math.max(0, Math.min(activePlayerIndex, players.size() - 1));
+        for (int offset = 0; offset < players.size(); offset++) {
+            int candidate = (idx + offset) % players.size();
+            if (bets[candidate] >= 0 || chips[candidate] > 0) {
+                currentPlayer = players.get(candidate);
+                return;
+            }
+        }
+
+        currentPlayer = players.get(0);
+    }
+
     public BlackjackGame(List<CardPlayer> players, Deck deck) {
         super(players, deck);
         int n = Math.max(players.size(), 1);
@@ -126,6 +142,7 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
 
         buildDrawPile();
         for (CardPlayer p : players) { getPlayerHand(p).clear(); getCensoredHand(p).clear(); }
+        ensureCurrentPlayer();
 
         phaseOrdinal = Phase.BETTING.ordinal();
         isGameReady  = false;
@@ -157,7 +174,7 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
         if (active == 0) { endGame(); return; }
 
         table(Component.translatable("message.charta_casino.blackjack.place_bets"));
-        currentPlayer = null;
+        ensureCurrentPlayer();
         checkAllBetsPlaced();
     }
 
@@ -217,6 +234,8 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
                     play(players.get(i), Component.translatable("message.charta_casino.blackjack.blackjack").withStyle(ChatFormatting.GOLD));
                 }
             }
+
+            ensureCurrentPlayer();
         });
         scheduledActions.add(() -> {});
     }
@@ -467,6 +486,7 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
         for (int i = 0; i < players.size(); i++) {
             if (chips[i] > bestChips) { bestChips = chips[i]; best = i; }
         }
+        ensureCurrentPlayer();
         if (best >= 0) {
             CardPlayer winner = players.get(best);
             winner.sendTitle(
@@ -488,6 +508,12 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
         LinkedList<Card> all = new LinkedList<>();
         for (GameSlot s : dealerSlots) s.stream().forEach(all::add);
         return handValue(new GameSlot(all, 0, 0, 0, 0));
+    }
+
+    @Override
+    public CardPlayer getCurrentPlayer() {
+        ensureCurrentPlayer();
+        return super.getCurrentPlayer();
     }
 
     public int getStartingChipsPublic() { return startingChips(); }

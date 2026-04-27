@@ -24,6 +24,6 @@ neoForge {
 }
 
 dependencies {
-    implementation "dev.lucaargolo:charta-neoforge-1.21.1:1.2.0"
+    implementation "dev.lucaargolo:charta-neoforge-1.21.1:${charta_version}"
 }
 

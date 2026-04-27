@@ -38,7 +38,8 @@ public record TexasHoldemActionPayload(int action) implements CustomPacketPayloa
         CardPlayer cardPlayer = ((LivingEntityMixed) player).charta_getCardPlayer();
         TexasHoldemGame game = menu.getGame();
 
-        if (game.getCurrentPlayer() != cardPlayer) return;
+        CardPlayer currentPlayer = game.getCurrentPlayer();
+        if (currentPlayer == null || currentPlayer != cardPlayer) return;
 
         int action = payload.action();
         boolean valid = action == TexasHoldemGame.ACTION_FOLD

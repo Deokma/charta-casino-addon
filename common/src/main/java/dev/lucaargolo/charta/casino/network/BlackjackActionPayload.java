@@ -46,7 +46,8 @@ public record BlackjackActionPayload(int action) implements CustomPacketPayload 
             return;
         }
 
-        if (game.getCurrentPlayer() != cardPlayer) return;
+        CardPlayer currentPlayer = game.getCurrentPlayer();
+        if (currentPlayer == null || currentPlayer != cardPlayer) return;
 
         boolean valid = action == BlackjackGame.ACTION_HIT
                 || action == BlackjackGame.ACTION_STAND

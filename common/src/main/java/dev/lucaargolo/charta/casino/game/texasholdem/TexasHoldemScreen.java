@@ -1,5 +1,6 @@
 package dev.lucaargolo.charta.casino.game.texasholdem;
 
+import dev.lucaargolo.charta.casino.CasinoAddon;
 import dev.lucaargolo.charta.casino.client.CasinoClientData;
 import dev.lucaargolo.charta.client.ChartaModClient;
 import dev.lucaargolo.charta.client.render.screen.GameScreen;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMenu> {
 
-    private static final ResourceLocation TEXTURE = ChartaMod.id("textures/gui/texas_holdem_bg.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("charta_casino", "textures/gui/texas_holdem_bg.png");
 
     // Main action buttons (3): Fold, Check/Call, All-In
     private static final int BTN_W   = 56;
@@ -265,6 +266,11 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
             }
         } else if (menu.isGameReady()) {
             CardPlayer current = menu.getCurrentPlayer();
+            if (current == null) {
+                Component waitingComp = Component.translatable("message.charta.dealing_cards").withStyle(ChatFormatting.GOLD);
+                g.drawString(font, waitingComp, cx - font.width(waitingComp) / 2, 125, 0xFFFFFF);
+                return;
+            }
             Component turnComp = menu.isCurrentPlayer()
                     ? Component.translatable("message.charta.your_turn").withStyle(ChatFormatting.GREEN)
                     : Component.translatable("message.charta.other_turn", current.getName())

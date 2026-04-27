@@ -102,6 +102,26 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
     private int getSmallBlind()     { return getBigBlind() / 2; }
     private int getRaiseAmount()    { return getBigBlind(); }
 
+    private void ensureCurrentPlayer() {
+        if (players.isEmpty()) return;
+        if (currentPlayer != null && players.contains(currentPlayer)) return;
+
+        Integer nextActor = pendingActors.peek();
+        if (nextActor != null && nextActor >= 0 && nextActor < players.size()) {
+            currentPlayer = players.get(nextActor);
+            return;
+        }
+
+        for (int i = 0; i < players.size(); i++) {
+            if (!folded[i] || chips[i] > 0) {
+                currentPlayer = players.get(i);
+                return;
+            }
+        }
+
+        currentPlayer = players.get(0);
+    }
+
     public int getStartingChipsPublic() { return getStartingChips(); }
     public int getRaiseAmountPublic()   { return getRaiseAmount(); }
 
@@ -177,6 +197,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
         Arrays.fill(chips, getStartingChips());
         isPaused = false; skipVoteMask = 0;
         isGameReady = false; isGameOver = false;
+        ensureCurrentPlayer();
         table(Component.translatable("message.charta.game_started"));
         dealNewHand();
     }
@@ -199,6 +220,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
         for (GameSlot slot : communitySlots) slot.clear();
         drawPile.clear();
         for (CardPlayer p : players) { getPlayerHand(p).clear(); getCensoredHand(p).clear(); }
+        ensureCurrentPlayer();
     }
 
     private void buildShuffledDrawPile() {
@@ -238,6 +260,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
         postBlind(bbIdx, getBigBlind());
         currentBet = getBigBlind();
         buildPendingActors((bbIdx + 1) % n, bbIdx);
+        ensureCurrentPlayer();
         table(Component.translatable("message.charta_casino.texas_holdem.preflop"));
         table(Component.translatable("message.charta_casino.texas_holdem.pot", pot));
     }
@@ -364,6 +387,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
 
     private void startPostFlopBetting() {
         buildPendingActors((dealerIndex + 1) % players.size(), dealerIndex);
+        ensureCurrentPlayer();
         table(Component.translatable("message.charta_casino.texas_holdem.pot", pot));
         runBettingRound();
     }
@@ -518,6 +542,7 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
     private void announceSessionWinner() {
         int winnerIdx = -1, maxChips = 0;
         for (int i = 0; i < players.size(); i++) if (chips[i] > maxChips) { maxChips = chips[i]; winnerIdx = i; }
+        ensureCurrentPlayer();
         if (winnerIdx >= 0) {
             CardPlayer winner = players.get(winnerIdx);
             winner.sendTitle(Component.translatable("message.charta.you_won").withStyle(ChatFormatting.GREEN), Component.translatable("message.charta.congratulations"));
@@ -547,6 +572,12 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
     private void advanceDealer() {
         int n = players.size();
         for (int tries = 0; tries < n; tries++) { dealerIndex = (dealerIndex + 1) % n; if (chips[dealerIndex] > 0) return; }
+    }
+
+    @Override
+    public CardPlayer getCurrentPlayer() {
+        ensureCurrentPlayer();
+        return super.getCurrentPlayer();
     }
 
     private static float evaluatePreflopStrength(List<Card> holeCards) {
