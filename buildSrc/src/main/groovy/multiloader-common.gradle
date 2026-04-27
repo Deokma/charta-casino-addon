@@ -36,8 +36,16 @@ repositories {
         filter { includeGroup('org.parchmentmc.data') }
     }
     maven {
+        name "Cafeteria"
+        url "https://maven.cafeteria.dev/releases"
+    }
+    maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
+    }
+    maven {
+        url = "Shedaniel's Maven"
+        url = "https://maven.shedaniel.me/"
     }
 }
 
@@ -106,15 +114,6 @@ publishing {
         register('mavenJava', MavenPublication) {
             artifactId base.archivesName.get()
             from components.java
-        }
-    }
-    repositories {
-        maven {
-            url = uri("https://maven.cafeteria.dev/releases")
-            credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
-            }
         }
     }
 }

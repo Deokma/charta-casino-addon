@@ -1,48 +1,34 @@
-# charta-casino-addon
+# Charta Casino Addon
 
-Blackjack and Texas Hold'em addon for [Charta](https://github.com/lucaargolo/charta).
+A reference addon for [Charta](https://github.com/lucaargolo/charta) that adds **Blackjack** and **Texas Hold'em** as standalone card games for both Fabric and NeoForge.
 
-## Getting Started
+## Games
 
-### Prerequisites
+- **Blackjack**: betting, hit, stand, double down, dealer autoplay, and table-side chip tracking.
+- **Texas Hold'em**: blinds, betting rounds, side pots, all-in support, showdown evaluation, and 3D chip stacks rendered on the card table.
 
-- JDK 21
-- Git
+## Requirements
 
-### Cloning
+- Minecraft 1.21.1
+- Java 21
+- Charta 1.2.1
+- Fabric Loader 0.17.3+ with Fabric API 0.116.7+1.21.1, or NeoForge 21.1.212+
 
-This project uses a git submodule for the Charta base mod. After cloning, initialise it:
-
-```bash
-git clone https://github.com/your-username/charta-casino-addon.git
-cd charta-casino-addon
-git submodule update --init --recursive
-```
-
-Or clone with submodules in one step:
-
-```bash
-git clone --recurse-submodules https://github.com/your-username/charta-casino-addon.git
-```
-
-### Building
+## Building
 
 ```bash
 ./gradlew build
 ```
 
-Gradle will automatically build the Charta base mod from the submodule at `libs/charta` and use it as a dependency — no manual jar building required.
+Artifacts are written to:
 
-### Updating Charta
+- `fabric/build/libs/`
+- `neoforge/build/libs/`
 
-To update the base mod to a newer commit:
+## Charta Addons
 
-```bash
-cd libs/charta
-git pull origin main
-cd ../..
-git add libs/charta
-git commit -m "Update charta submodule"
-```
+See `ADDON_GUIDE.md` for a loader-aware walkthrough of how to structure a Charta addon with the current API.
 
-Then update `charta_version` in `gradle.properties` to match the new version.
+## License
+
+MPL-2.0

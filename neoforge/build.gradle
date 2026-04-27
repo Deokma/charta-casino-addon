@@ -24,46 +24,5 @@ neoForge {
 }
 
 dependencies {
-    // Charta NeoForge jar — built from submodule by the :buildCharta task.
-    compileOnly files(rootProject.chartaJar('neoforge'))
-}
-
-// Copy Charta NeoForge jar into run/mods before each run
-tasks.register('copyChartaJar', Copy) {
-    dependsOn rootProject.tasks.named('buildCharta')
-    from rootProject.chartaJar('neoforge')
-    into layout.projectDirectory.dir('run/mods')
-}
-
-afterEvaluate {
-    tasks.matching { it.name.startsWith('run') }.configureEach {
-        dependsOn 'copyChartaJar'
-    }
-}
-
-// Remove charta-common from compile classpath to avoid duplicate package conflict
-tasks.named('compileJava', JavaCompile) {
-    doFirst {
-        classpath = classpath.filter { f -> !f.name.startsWith('charta-common') }
-    }
-}
-
-tasks.named('compileJava') {
-    inputs.file(rootProject.chartaJar('neoforge'))
-}
-
-// Patch ignoreList to exclude charta-common from module system
-tasks.matching { it.name.startsWith('write') && it.name.contains('LegacyClasspath') }.configureEach {
-    doLast {
-        ['clientRunVmArgs.txt', 'serverRunVmArgs.txt'].each { fname ->
-            def f = file("build/moddev/$fname")
-            if (f.exists()) {
-                def content = f.text
-                content = content.replaceAll(/-DignoreList=([^\n]*)/) { match, list ->
-                    "-DignoreList=${list},charta-common"
-                }
-                f.text = content
-            }
-        }
-    }
+    implementation "dev.lucaargolo:charta-neoforge-1.21.1:${charta_version}"
 }
