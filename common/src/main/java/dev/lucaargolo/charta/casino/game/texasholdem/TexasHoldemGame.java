@@ -12,7 +12,6 @@ import dev.lucaargolo.charta.common.game.api.card.Deck;
 import dev.lucaargolo.charta.common.game.api.game.Game;
 import dev.lucaargolo.charta.common.game.api.game.GameOption;
 import dev.lucaargolo.charta.common.menu.AbstractCardMenu;
-import dev.lucaargolo.charta.common.registry.ModMenuTypeRegistry;
 import dev.lucaargolo.charta.common.sound.ModSounds;
 import dev.lucaargolo.charta.common.utils.CardImage;
 import net.minecraft.ChatFormatting;
@@ -105,11 +104,6 @@ public class TexasHoldemGame extends Game<TexasHoldemGame, TexasHoldemMenu> {
 
     public int getStartingChipsPublic() { return getStartingChips(); }
     public int getRaiseAmountPublic()   { return getRaiseAmount(); }
-
-    @Override
-    public ModMenuTypeRegistry.AdvancedMenuTypeEntry<TexasHoldemMenu, AbstractCardMenu.Definition> getMenuType() {
-        return CasinoAddon.TEXAS_HOLDEM_MENU;
-    }
 
     @Override
     public TexasHoldemMenu createMenu(int containerId, Inventory playerInventory, AbstractCardMenu.Definition definition) {

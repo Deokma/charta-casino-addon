@@ -2,13 +2,15 @@ package dev.lucaargolo.charta.casino.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.lucaargolo.charta.casino.CasinoAddon;
 import dev.lucaargolo.charta.client.ChartaModClient;
-import dev.lucaargolo.charta.client.render.block.CardTableBlockEntityRenderer;
 import dev.lucaargolo.charta.common.block.entity.CardTableBlockEntity;
 import dev.lucaargolo.charta.common.game.api.GameSlot;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
@@ -29,9 +31,15 @@ public final class PokerChipRenderer {
     };
     private static final int[] CHIP_ALLIN  = { 0xFFFFCC00, 0xFFFFAA00 };
     private static final int[] CHIP_FOLDED = { 0xFF555555, 0xFF444444 };
+    private static final ResourceLocation WHITE_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
 
     public static void register() {
-        CardTableBlockEntityRenderer.EXTRA_RENDERER = PokerChipRenderer::render;
+        ChartaModClient.registerExtraRenderer(
+                gameType -> gameType == CasinoAddon.TEXAS_HOLDEM_GAME.get(),
+                (blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay) ->
+                        render(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay)
+        );
     }
 
     private static void render(CardTableBlockEntity blockEntity, float partialTick,
@@ -123,7 +131,7 @@ public final class PokerChipRenderer {
         poseStack.scale(1f / 160f, 1f / 160f, 1f / 160f);
 
         VertexConsumer consumer = bufferSource.getBuffer(
-                ChartaModClient.getRenderTypeManager().chipStack());
+                RenderType.entityTranslucent(WHITE_TEXTURE));
 
         float x0 = px - DISC_R, x1 = px + DISC_R;
         float y0 = py - DISC_R, y1 = py + DISC_R;

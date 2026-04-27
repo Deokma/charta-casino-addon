@@ -13,7 +13,6 @@ import dev.lucaargolo.charta.common.game.api.card.Rank;
 import dev.lucaargolo.charta.common.game.api.game.Game;
 import dev.lucaargolo.charta.common.game.api.game.GameOption;
 import dev.lucaargolo.charta.common.menu.AbstractCardMenu;
-import dev.lucaargolo.charta.common.registry.ModMenuTypeRegistry;
 import dev.lucaargolo.charta.common.sound.ModSounds;
 import dev.lucaargolo.charta.common.utils.CardImage;
 import net.minecraft.ChatFormatting;
@@ -94,14 +93,6 @@ public class BlackjackGame extends Game<BlackjackGame, BlackjackMenu> {
     @Override
     public List<GameOption<?>> getOptions() { return List.of(STARTING_CHIPS_OPT, MIN_BET_OPT); }
 
-    /** Overridden by NeoForge to return the addon's own registered MenuType entry. */
-    public static java.util.function.Supplier<ModMenuTypeRegistry.AdvancedMenuTypeEntry<BlackjackMenu, AbstractCardMenu.Definition>> MENU_TYPE_ENTRY_OVERRIDE = null;
-
-    @Override
-    public ModMenuTypeRegistry.AdvancedMenuTypeEntry<BlackjackMenu, AbstractCardMenu.Definition> getMenuType() {
-        if (MENU_TYPE_ENTRY_OVERRIDE != null) return MENU_TYPE_ENTRY_OVERRIDE.get();
-        return CasinoAddon.BLACKJACK_MENU;
-    }
     @Override
     public BlackjackMenu createMenu(int containerId, Inventory playerInventory, AbstractCardMenu.Definition definition) {
         return new BlackjackMenu(containerId, playerInventory, definition);
