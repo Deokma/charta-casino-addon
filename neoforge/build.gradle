@@ -3,8 +3,6 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
-def chartaJar = rootProject.file(charta_neoforge_jar)
-
 neoForge {
     version = neoforge_version
     parchment {
@@ -26,44 +24,6 @@ neoForge {
 }
 
 dependencies {
-    compileOnly files(chartaJar)
+    implementation "dev.lucaargolo:charta-neoforge-1.21.1:1.2.0"
 }
 
-// Copy Charta NeoForge jar into run/mods before each run
-tasks.register('copyChartaJar', Copy) {
-    from chartaJar
-    into layout.projectDirectory.dir('run/mods')
-}
-
-afterEvaluate {
-    tasks.matching { it.name.startsWith('run') }.configureEach {
-        dependsOn 'copyChartaJar'
-    }
-}
-
-// Remove charta-common from compile classpath to avoid duplicate package conflict
-tasks.named('compileJava', JavaCompile) {
-    doFirst {
-        classpath = classpath.filter { f -> !f.name.startsWith('charta-common') }
-    }
-}
-
-tasks.named('compileJava') {
-    inputs.file(chartaJar)
-}
-
-// Patch ignoreList to exclude charta-common from module system
-tasks.matching { it.name.startsWith('write') && it.name.contains('LegacyClasspath') }.configureEach {
-    doLast {
-        ['clientRunVmArgs.txt', 'serverRunVmArgs.txt'].each { fname ->
-            def f = file("build/moddev/$fname")
-            if (f.exists()) {
-                def content = f.text
-                content = content.replaceAll(/-DignoreList=([^\n]*)/) { match, list ->
-                    "-DignoreList=${list},charta-common"
-                }
-                f.text = content
-            }
-        }
-    }
-}
