@@ -202,7 +202,7 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
         int cx = width / 2 - leftPos;
         BlackjackGame.Phase phase = menu.getPhase();
 
-        // ── Phase title ───────────────────────────────────────────────────────
+        // ── Phase title — positioned above dealer cards ──────────────────────
         String phaseStr = switch (phase) {
             case BETTING -> "♠ Place Your Bets ♠";
             case PLAYING -> "♠ Your Turn ♠";
@@ -210,9 +210,11 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
             case RESULT  -> "♠ Results ♠";
         };
         Component phaseComp = Component.literal(phaseStr).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
-        g.drawString(font, phaseComp, cx - font.width(phaseComp)/2, 4, 0xFFFFFF);
+        // Position title above the dealer card area (dealer cards start around y=50 in screen coords)
+        int titleY = 50 - topPos - 12; // 12 pixels above dealer cards
+        g.drawString(font, phaseComp, cx - font.width(phaseComp)/2, titleY, 0xFFFFFF);
 
-        // ── Dealer info ───────────────────────────────────────────────────────
+        // ── Dealer info — positioned above dealer cards ──────────────────────
         if (phase != BlackjackGame.Phase.BETTING) {
             String dealerStr;
             int dealerColor;
@@ -228,8 +230,9 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
                 else if (dv == 21){ dealerStr = "Dealer: " + dv + " ★";       dealerColor = 0xFFD700; }
                 else              { dealerStr = "Dealer: " + dv;              dealerColor = dv >= 17 ? 0xFFFF55 : 0xFFFFFF; }
             }
-            g.fill(cx - font.width(dealerStr)/2 - 2, 13, cx + font.width(dealerStr)/2 + 2, 24, 0x66000000);
-            g.drawString(font, dealerStr, cx - font.width(dealerStr)/2, 14, dealerColor);
+            int dealerTextY = titleY + 11; // Just below the phase title
+            g.fill(cx - font.width(dealerStr)/2 - 2, dealerTextY - 1, cx + font.width(dealerStr)/2 + 2, dealerTextY + 10, 0x66000000);
+            g.drawString(font, dealerStr, cx - font.width(dealerStr)/2, dealerTextY, dealerColor);
         }
 
         // ── Result banner (RESULT phase) ─────────────────────────────────────
@@ -262,11 +265,13 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
                 resultColor = 0xFF4444;
             }
             int rw = font.width(resultStr);
-            g.fill(cx - rw/2 - 4, 33, cx + rw/2 + 4, 47, 0xCC000000);
-            g.drawString(font, resultStr, cx - rw/2, 35, resultColor, true);
+            // Position result banner in the center of the play area
+            int resultY = (height - 63 - 40) / 2 - topPos;
+            g.fill(cx - rw/2 - 4, resultY - 1, cx + rw/2 + 4, resultY + 13, 0xCC000000);
+            g.drawString(font, resultStr, cx - rw/2, resultY + 1, resultColor, true);
         }
 
-        // ── My hand value ─────────────────────────────────────────────────────
+        // ── My hand value — positioned above player cards ────────────────────
         if (phase != BlackjackGame.Phase.BETTING) {
             int myIdx = menu.getGame().getPlayers().indexOf(menu.getCardPlayer());
             int hv = menu.getHandValue();
@@ -277,14 +282,13 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
             if (isBust) handStr = "Your hand: " + hv + " — BUST";
             if (isStood && !isBust) handStr += " (stood)";
             int handColor = isBust ? 0xFF4444 : hv == 21 ? 0xFFD700 : 0xFFFFFF;
-            g.drawString(font, handStr, cx - font.width(handStr)/2, 24, handColor);
+            // Position above player cards (player cards are at bottom, around height-100 in screen coords)
+            int handY = height - 63 - topPos - 80; // Above player card area
+            g.drawString(font, handStr, cx - font.width(handStr)/2, handY, handColor);
         }
 
-        // ── Turn / status message ─────────────────────────────────────────────
-        // Anchor status text to the centre of the card play area so it stays
-        // correctly positioned at any GUI scale.
-        int cardAreaCenterY = (40 + (height - 63)) / 2 - topPos;
-        int statusY = cardAreaCenterY + 20;
+        // ── Turn / status message — centered in play area ────────────────────
+        int statusY = (height - 63 - 40) / 2 - topPos + 20; // Center of play area
         if (phase == BlackjackGame.Phase.PLAYING && menu.isGameReady()) {
             try {
                 CardPlayer cur = menu.getCurrentPlayer();
@@ -312,7 +316,8 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
         // ── Player info under avatars (topbar) ────────────────────────────────
         List<CardPlayer> players = menu.getGame().getPlayers();
         int n = players.size();
-        float slotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 28f;
+        // Обновлен размер для соответствия увеличенным слотам
+        float slotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 42f; // было 28f
         float totalW = n * slotW + (n-1f)*(slotW/10f);
         for (int i = 0; i < n; i++) {
             float px = width/2f - totalW/2f + i*(slotW + slotW/10f);
@@ -339,7 +344,8 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
 
             g.pose().pushPose();
             g.pose().translate(px + 26f - leftPos, 29f - topPos, 0f);
-            g.pose().scale(0.5f, 0.5f, 0.5f);
+            // Увеличен масштаб текста для лучшей читаемости
+            g.pose().scale(0.65f, 0.65f, 0.65f); // было 0.5f
             g.drawString(font, chipStr, 0, 0, chipColor, true);
             if (!statusStr.isEmpty()) g.drawString(font, statusStr, 0, 10, statusColor, true);
             g.pose().popPose();
@@ -469,7 +475,8 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
         super.renderTopBar(g);
         List<CardPlayer> players = menu.getGame().getPlayers();
         int n = players.size();
-        float slotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 28f;
+        // Увеличен размер слотов для лучшей видимости карт
+        float slotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 42f; // было 28f
         float total = n * slotW + (n-1f)*(slotW/10f);
         for (int i = 0; i < n; i++) {
             float px = width/2f - total/2f + i*(slotW + slotW/10f);

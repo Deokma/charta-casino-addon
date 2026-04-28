@@ -227,10 +227,6 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
     protected void renderLabels(@NotNull GuiGraphics g, int mouseX, int mouseY) {
         int cx = width / 2 - leftPos;
 
-        // Centre of the card play area in GUI-relative coordinates.
-        // bgTop=40, bgBottom=height-63 in screen coords; subtract topPos for GUI coords.
-        int cardAreaCenterY = (40 + (height - 63)) / 2 - topPos;
-
         PokerPhase phase = menu.getPhase();
         String phaseName = switch (phase) {
             case PREFLOP  -> "Pre-Flop";
@@ -241,21 +237,22 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
         };
         Component phaseComp = Component.literal(phaseName)
                 .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
-        // Phase/pot labels sit above the community card row
-        int textY = cardAreaCenterY - 30;
-        g.drawString(font, phaseComp, cx - font.width(phaseComp) / 2, textY, 0xFFFFFF);
+        
+        // Position phase title above community cards (community cards are around y=90 in screen coords)
+        int titleY = 90 - topPos - 35; // 35 pixels above community cards
+        g.drawString(font, phaseComp, cx - font.width(phaseComp) / 2, titleY, 0xFFFFFF);
 
         Component potComp = Component.translatable("message.charta_casino.texas_holdem.pot", menu.getPot());
-        g.drawString(font, potComp, cx - font.width(potComp) / 2, textY + 10, 0xFFD700);
+        g.drawString(font, potComp, cx - font.width(potComp) / 2, titleY + 10, 0xFFD700);
 
         int currentBet = menu.getCurrentBet();
         if (currentBet > 0) {
             Component betComp = Component.literal("Bet: " + currentBet).withStyle(ChatFormatting.WHITE);
-            g.drawString(font, betComp, cx - font.width(betComp) / 2, textY + 20, 0xFFFFFF);
+            g.drawString(font, betComp, cx - font.width(betComp) / 2, titleY + 20, 0xFFFFFF);
         }
 
-        // Turn / status label sits just below the community card row
-        int statusY = cardAreaCenterY + 20;
+        // Turn / status label sits below the community cards
+        int statusY = 90 - topPos + 40; // Below community cards
 
         if (phase == PokerPhase.SHOWDOWN) {
             Component bannerMsg = null;
@@ -445,7 +442,8 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
         super.renderTopBar(g);
         List<CardPlayer> players = menu.getGame().getPlayers();
         int n = players.size();
-        float playerSlotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 28f;
+        // Увеличен размер слотов для лучшей видимости карт
+        float playerSlotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 42f; // было 28f
         float playersWidth = n * playerSlotW + (n - 1f) * (playerSlotW / 10f);
 
         for (int i = 0; i < n; i++) {
@@ -476,7 +474,8 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
 
             g.pose().pushPose();
             g.pose().translate(px + 26f, 29f, 0f);
-            g.pose().scale(0.5f, 0.5f, 0.5f);
+            // Увеличен масштаб текста для лучшей читаемости
+            g.pose().scale(0.65f, 0.65f, 0.65f); // было 0.5f
             g.drawString(font, chipStr, 0, 0, textColor, true);
             g.pose().popPose();
         }
