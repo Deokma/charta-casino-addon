@@ -227,6 +227,10 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
     protected void renderLabels(@NotNull GuiGraphics g, int mouseX, int mouseY) {
         int cx = width / 2 - leftPos;
 
+        // Centre of the card play area in GUI-relative coordinates.
+        // bgTop=40, bgBottom=height-63 in screen coords; subtract topPos for GUI coords.
+        int cardAreaCenterY = (40 + (height - 63)) / 2 - topPos;
+
         PokerPhase phase = menu.getPhase();
         String phaseName = switch (phase) {
             case PREFLOP  -> "Pre-Flop";
@@ -237,8 +241,8 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
         };
         Component phaseComp = Component.literal(phaseName)
                 .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
-        // Anchor text above the community cards (y=60) so it stays visible at any GUI scale
-        int textY = 24;
+        // Phase/pot labels sit above the community card row
+        int textY = cardAreaCenterY - 30;
         g.drawString(font, phaseComp, cx - font.width(phaseComp) / 2, textY, 0xFFFFFF);
 
         Component potComp = Component.translatable("message.charta_casino.texas_holdem.pot", menu.getPot());
@@ -250,6 +254,9 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
             g.drawString(font, betComp, cx - font.width(betComp) / 2, textY + 20, 0xFFFFFF);
         }
 
+        // Turn / status label sits just below the community card row
+        int statusY = cardAreaCenterY + 20;
+
         if (phase == PokerPhase.SHOWDOWN) {
             Component bannerMsg = null;
             var history = ChartaModClient.LOCAL_HISTORY;
@@ -260,29 +267,29 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
             if (bannerMsg != null) {
                 int bw = font.width(bannerMsg) + 12;
                 int bx = cx - bw / 2;
-                g.fill(bx - 1, 117, bx + bw + 1, 133, 0xCC000000);
-                g.fill(bx, 118, bx + bw, 132, 0x88004400);
-                g.drawString(font, bannerMsg, cx - font.width(bannerMsg) / 2, 121, 0xFFD700);
+                g.fill(bx - 1, statusY - 4, bx + bw + 1, statusY + 12, 0xCC000000);
+                g.fill(bx, statusY - 3, bx + bw, statusY + 11, 0x88004400);
+                g.drawString(font, bannerMsg, cx - font.width(bannerMsg) / 2, statusY, 0xFFD700);
             }
         } else if (menu.isGameReady()) {
             CardPlayer current = menu.getCurrentPlayer();
             if (current == null) {
                 Component waitingComp = Component.translatable("message.charta.dealing_cards").withStyle(ChatFormatting.GOLD);
-                g.drawString(font, waitingComp, cx - font.width(waitingComp) / 2, 125, 0xFFFFFF);
+                g.drawString(font, waitingComp, cx - font.width(waitingComp) / 2, statusY, 0xFFFFFF);
                 return;
             }
             Component turnComp = menu.isCurrentPlayer()
                     ? Component.translatable("message.charta.your_turn").withStyle(ChatFormatting.GREEN)
                     : Component.translatable("message.charta.other_turn", current.getName())
                     .withStyle(s -> s.withColor(current.getColor().getTextureDiffuseColor()));
-            g.drawString(font, turnComp, cx - font.width(turnComp) / 2, 125, 0xFFFFFF);
+            g.drawString(font, turnComp, cx - font.width(turnComp) / 2, statusY, 0xFFFFFF);
         } else if (menu.isPaused()) {
             Component nextComp = Component.literal("Next hand starting...")
                     .withStyle(ChatFormatting.YELLOW);
-            g.drawString(font, nextComp, cx - font.width(nextComp) / 2, 125, 0xFFFFFF);
+            g.drawString(font, nextComp, cx - font.width(nextComp) / 2, statusY, 0xFFFFFF);
         } else {
             Component dealComp = Component.translatable("message.charta.dealing_cards").withStyle(ChatFormatting.GOLD);
-            g.drawString(font, dealComp, cx - font.width(dealComp) / 2, 125, 0xFFFFFF);
+            g.drawString(font, dealComp, cx - font.width(dealComp) / 2, statusY, 0xFFFFFF);
         }
     }
 

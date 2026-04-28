@@ -9,7 +9,10 @@
   "environment": "*",
   "entrypoints": {
     "main": ["by.deokma.casino.fabric.CasinoAddonFabric"],
-    "client": ["by.deokma.casino.fabric.CasinoAddonFabricClient"]
+    "client": ["by.deokma.casino.fabric.CasinoAddonFabricClient"],
+    "jei_mod_plugin": [
+      "by.deokma.casino.client.compat.JEICompat"
+    ]
   },
   "mixins": [],
   "depends": {

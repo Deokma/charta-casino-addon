@@ -3,6 +3,13 @@ plugins {
     id 'fabric-loom'
 }
 
+repositories {
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
+    }
+}
+
 loom {
     mixin {
         defaultRefmapName.set("${mod_id}.refmap.json")
@@ -33,4 +40,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     modImplementation "dev.lucaargolo:charta-fabric-1.21.1:${charta_version}"
+
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-fabric-api:${jei_version}")
+
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}")
+    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${rei_version}")
 }

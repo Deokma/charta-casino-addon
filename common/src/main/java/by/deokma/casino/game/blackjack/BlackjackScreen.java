@@ -281,7 +281,10 @@ public class BlackjackScreen extends GameScreen<BlackjackGame, BlackjackMenu> {
         }
 
         // ── Turn / status message ─────────────────────────────────────────────
-        int statusY = 125;
+        // Anchor status text to the centre of the card play area so it stays
+        // correctly positioned at any GUI scale.
+        int cardAreaCenterY = (40 + (height - 63)) / 2 - topPos;
+        int statusY = cardAreaCenterY + 20;
         if (phase == BlackjackGame.Phase.PLAYING && menu.isGameReady()) {
             try {
                 CardPlayer cur = menu.getCurrentPlayer();

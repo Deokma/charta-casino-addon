@@ -3,6 +3,13 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+repositories {
+    maven {
+        name = 'BlameJared'
+        url = 'https://maven.blamejared.com'
+    }
+}
+
 neoForge {
     version = neoforge_version
     parchment {
@@ -25,4 +32,11 @@ neoForge {
 
 dependencies {
     implementation "dev.lucaargolo:charta-neoforge-1.21.1:${charta_version}"
+
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    compileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}")
+    runtimeOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}")
 }
