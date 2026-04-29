@@ -8,8 +8,14 @@
   "license": "${license}",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabric"],
-    "client": ["dev.lucaargolo.charta.casino.fabric.CasinoAddonFabricClient"]
+    "main": ["by.deokma.casino.fabric.CasinoAddonFabric"],
+    "client": ["by.deokma.casino.fabric.CasinoAddonFabricClient"],
+    "jei_mod_plugin": [
+      "by.deokma.casino.client.compat.JEICompat"
+    ],
+    "rei_client_plugins": [
+      "by.deokma.casino.fabric.compat.REICompat"
+    ]
   },
   "mixins": [],
   "depends": {
@@ -17,6 +23,9 @@
     "fabric-api": "*",
     "minecraft": "~1.21.1",
     "java": ">=${java_version}",
+    "charta": "*"
+  },
+  "after": {
     "charta": "*"
   }
 }

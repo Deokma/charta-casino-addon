@@ -20,30 +20,18 @@ afterEvaluate {
     }
 }
 
-repositories {
-    // Local flat-dir repo pointing at the built Charta jars
-    flatDir {
-        dirs '../common/build/libs',
-             '../fabric/build/libs',
-             '../neoforge/build/libs'
-    }
-}
-
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
-    // Charta common jar — used for compilation on Fabric.
-    // NeoForge uses charta-neoforge jar instead (see neoforge/build.gradle).
-    // This jar is NOT added to neoforge compile classpath to avoid duplicate package conflicts.
-    compileOnly files(rootProject.file(charta_jar))
-}
+    implementation "dev.lucaargolo:charta-common-1.21.1:${charta_version}"
 
-// Ensure Charta common jar is up to date before compiling
-tasks.named('compileJava') {
-    inputs.file(rootProject.file(charta_jar))
-    // If you change the base mod, run: ./gradlew :common:jar :neoforge:jar in the base mod folder first
+    // JEI common API — needed to register IScreenHandler for our game screens
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    
+    // REI common API — needed for REI integration
+    compileOnly("me.shedaniel:RoughlyEnoughItems-api:${rei_version}")
 }
 
 configurations {

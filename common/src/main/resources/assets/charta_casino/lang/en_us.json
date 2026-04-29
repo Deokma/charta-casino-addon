@@ -56,16 +56,18 @@
 
   "message.charta_casino.durak.game_started": "Game started! Shuffle up and deal.",
   "message.charta_casino.durak.trump_is": "Trump suit: %s",
-  "message.charta_casino.durak.attacked": "Attacked",
-  "message.charta_casino.durak.defended": "Defended",
+  "message.charta_casino.durak.attacked": "Attacks!",
+  "message.charta_casino.durak.defended": "Defends!",
   "message.charta_casino.durak.takes": "Takes the cards!",
-  "message.charta_casino.durak.pass": "Pass",
-  "message.charta_casino.durak.out": "Out of cards — not the Durak!",
-  "message.charta_casino.durak.you_are_durak": "You are the Durak!",
-  "message.charta_casino.durak.durak_subtitle": "Better luck next time.",
+  "message.charta_casino.durak.pass": "Pass — defense successful!",
+  "message.charta_casino.durak.out": "Leaves the game — not the Durak!",
+  "message.charta_casino.durak.you_are_durak": "DURAK!",
+  "message.charta_casino.durak.durak_subtitle": "You are the fool!",
   "message.charta_casino.durak.not_durak": "%s is the Durak!",
-  "message.charta_casino.durak.durak_is": "%s is the Durak!",
+  "message.charta_casino.durak.durak_is": "Game over! Durak: %s",
+  "message.charta_casino.durak.throws_in": "Throws in!",
 
   "button.charta_casino.durak.pass": "Pass",
-  "button.charta_casino.durak.take": "Take"
+  "button.charta_casino.durak.take": "Take",
+  "button.charta_casino.durak.throw_in": "Throw In"
 }
