@@ -1,0 +1,34 @@
+{
+  "charta.blackjack": "Блэкджек",
+  "charta.texas_holdem": "Техасский Холдем",
+  "charta.durak": "Дурак",
+
+  "button.charta_casino.blackjack.hit": "Ещё",
+  "button.charta_casino.blackjack.stand": "Хватит",
+  "button.charta_casino.blackjack.double": "Удвоить",
+
+  "button.charta_casino.texas_holdem.fold": "Пас",
+  "button.charta_casino.texas_holdem.call": "Колл",
+  "button.charta_casino.texas_holdem.check": "Чек",
+  "button.charta_casino.texas_holdem.raise": "Рейз",
+  "button.charta_casino.texas_holdem.allin": "Ва-банк",
+
+  "message.charta_casino.texas_holdem.pot": "Банк: %s",
+
+  "message.charta_casino.durak.game_started": "Игра началась! Раздаём карты.",
+  "message.charta_casino.durak.trump_is": "Козырь: %s",
+  "message.charta_casino.durak.attacked": "Ходит!",
+  "message.charta_casino.durak.defended": "Бьёт!",
+  "message.charta_casino.durak.takes": "Берёт карты!",
+  "message.charta_casino.durak.pass": "Бито!",
+  "message.charta_casino.durak.out": "Вышел из игры — не дурак!",
+  "message.charta_casino.durak.you_are_durak": "ДУРАК!",
+  "message.charta_casino.durak.durak_subtitle": "В следующий раз повезёт.",
+  "message.charta_casino.durak.not_durak": "%s — дурак!",
+  "message.charta_casino.durak.durak_is": "Игра окончена! Дурак: %s",
+  "message.charta_casino.durak.throws_in": "Подкидывает!",
+
+  "button.charta_casino.durak.pass": "Бито",
+  "button.charta_casino.durak.take": "Беру",
+  "button.charta_casino.durak.throw_in": "Подкинуть"
+}
