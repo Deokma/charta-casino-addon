@@ -32,6 +32,12 @@ dependencies {
     
     // REI common API — needed for REI integration
     compileOnly("me.shedaniel:RoughlyEnoughItems-api:${rei_version}")
+    
+    // Test dependencies
+    testImplementation platform("org.junit:junit-bom:5.10.0")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.mockito:mockito-core:5.11.0"
+    testImplementation "org.assertj:assertj-core:3.25.3"
 }
 
 configurations {
@@ -45,7 +51,30 @@ configurations {
     }
 }
 
+// Configure test source set
+sourceSets {
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+        resources {
+            srcDir 'src/test/resources'
+        }
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
 artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
+
+// Configure test task
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
 }

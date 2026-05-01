@@ -69,5 +69,9 @@
 
   "button.charta_casino.durak.pass": "Pass",
   "button.charta_casino.durak.take": "Take",
-  "button.charta_casino.durak.throw_in": "Throw In"
+  "button.charta_casino.durak.throw_in": "Throw In",
+
+  "charta_md:charta.how_to_play_blackjack": "charta_casino:lang/charta_md/en_us/how_to_play_blackjack.md",
+  "charta_md:charta.how_to_play_texas_holdem": "charta_casino:lang/charta_md/en_us/how_to_play_texas_holdem.md"
+
 }

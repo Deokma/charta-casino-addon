@@ -5,14 +5,10 @@ import by.deokma.casino.client.PokerChipRenderer;
 import by.deokma.casino.game.blackjack.BlackjackGame;
 import by.deokma.casino.game.blackjack.BlackjackMenu;
 import by.deokma.casino.game.blackjack.BlackjackScreen;
-import by.deokma.casino.game.durak.DurakGame;
-import by.deokma.casino.game.durak.DurakMenu;
-import by.deokma.casino.game.durak.DurakScreen;
 import by.deokma.casino.game.texasholdem.TexasHoldemGame;
 import by.deokma.casino.game.texasholdem.TexasHoldemMenu;
 import by.deokma.casino.game.texasholdem.TexasHoldemScreen;
 import by.deokma.casino.network.BlackjackActionPayload;
-import by.deokma.casino.network.DurakActionPayload;
 import by.deokma.casino.network.TexasHoldemActionPayload;
 import by.deokma.casino.network.TexasHoldemChipsPayload;
 import dev.lucaargolo.charta.common.game.Games;
@@ -23,8 +19,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -39,8 +35,8 @@ public class CasinoAddonNeoForge {
             GAME_TYPES.register("blackjack", () -> BlackjackGame::new);
     private static final Supplier<GameType<TexasHoldemGame, TexasHoldemMenu>> TEXAS_HOLDEM_GAME =
             GAME_TYPES.register("texas_holdem", () -> TexasHoldemGame::new);
-    private static final Supplier<GameType<DurakGame, DurakMenu>> DURAK_GAME =
-            GAME_TYPES.register("durak", () -> DurakGame::new);
+    //private static final Supplier<GameType<DurakGame, DurakMenu>> DURAK_GAME =
+    //        GAME_TYPES.register("durak", () -> DurakGame::new);
 
 
     private static final Supplier<MenuType<BlackjackMenu>> BLACKJACK_MENU =
@@ -49,9 +45,9 @@ public class CasinoAddonNeoForge {
     private static final Supplier<MenuType<TexasHoldemMenu>> TEXAS_HOLDEM_MENU =
             MENU_TYPES.register("texas_holdem", () -> IMenuTypeExtension.create((containerId, inventory, extraData) ->
                     new TexasHoldemMenu(containerId, inventory, AbstractCardMenu.Definition.STREAM_CODEC.decode(extraData))));
-    private static final Supplier<MenuType<DurakMenu>> DURAK_MENU =
-            MENU_TYPES.register("durak", () -> IMenuTypeExtension.create((containerId, inventory, extraData) ->
-                    new DurakMenu(containerId, inventory, AbstractCardMenu.Definition.STREAM_CODEC.decode(extraData))));
+    //private static final Supplier<MenuType<DurakMenu>> DURAK_MENU =
+    //        MENU_TYPES.register("durak", () -> IMenuTypeExtension.create((containerId, inventory, extraData) ->
+    //                new DurakMenu(containerId, inventory, AbstractCardMenu.Definition.STREAM_CODEC.decode(extraData))));
 
     public CasinoAddonNeoForge(IEventBus modBus) {
         CasinoAddon.init();
@@ -59,10 +55,10 @@ public class CasinoAddonNeoForge {
         MENU_TYPES.register(modBus);
         CasinoAddon.BLACKJACK_GAME = BLACKJACK_GAME;
         CasinoAddon.TEXAS_HOLDEM_GAME = TEXAS_HOLDEM_GAME;
-        CasinoAddon.DURAK_GAME = DURAK_GAME;
+        //CasinoAddon.DURAK_GAME = DURAK_GAME;
         CasinoAddon.BLACKJACK_MENU = BLACKJACK_MENU;
         CasinoAddon.TEXAS_HOLDEM_MENU = TEXAS_HOLDEM_MENU;
-        CasinoAddon.DURAK_MENU = DURAK_MENU;
+        //CasinoAddon.DURAK_MENU = DURAK_MENU;
 
         modBus.addListener(this::registerPayloadHandlers);
 
@@ -70,7 +66,7 @@ public class CasinoAddonNeoForge {
             modBus.addListener((RegisterMenuScreensEvent event) -> {
                 event.register(BLACKJACK_MENU.get(), BlackjackScreen::new);
                 event.register(TEXAS_HOLDEM_MENU.get(), TexasHoldemScreen::new);
-                event.register(DURAK_MENU.get(), DurakScreen::new);
+                //event.register(DURAK_MENU.get(), DurakScreen::new);
                 PokerChipRenderer.register();
             });
         }
@@ -82,8 +78,8 @@ public class CasinoAddonNeoForge {
                 BlackjackActionPayload.handleServer(payload, (net.minecraft.server.level.ServerPlayer) context.player()));
         registrar.playToServer(TexasHoldemActionPayload.TYPE, TexasHoldemActionPayload.STREAM_CODEC, (payload, context) ->
                 TexasHoldemActionPayload.handleServer(payload, (net.minecraft.server.level.ServerPlayer) context.player()));
-        registrar.playToServer(DurakActionPayload.TYPE, DurakActionPayload.STREAM_CODEC, (payload, context) ->
-                DurakActionPayload.handleServer(payload, (net.minecraft.server.level.ServerPlayer) context.player()));
+        //registrar.playToServer(DurakActionPayload.TYPE, DurakActionPayload.STREAM_CODEC, (payload, context) ->
+        //        DurakActionPayload.handleServer(payload, (net.minecraft.server.level.ServerPlayer) context.player()));
         registrar.playToClient(TexasHoldemChipsPayload.TYPE, TexasHoldemChipsPayload.STREAM_CODEC, (payload, context) ->
                 TexasHoldemChipsPayload.handleClient(payload));
     }

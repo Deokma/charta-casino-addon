@@ -399,37 +399,39 @@ public class TexasHoldemScreen extends GameScreen<TexasHoldemGame, TexasHoldemMe
     public void renderTopBar(@NotNull GuiGraphics g) {
         super.renderTopBar(g);
         List<CardPlayer> players = menu.getGame().getPlayers();
-        int   n          = players.size();
-        float playerSlotW = playerSlotW();
+        int n = players.size();
+        float playerSlotW = CardSlot.getWidth(CardSlot.Type.PREVIEW) + 28f;
         float playersWidth = n * playerSlotW + (n - 1f) * (playerSlotW / 10f);
 
-        // Colour bands
         for (int i = 0; i < n; i++) {
-            float    px    = width / 2f - playersWidth / 2f + i * (playerSlotW + playerSlotW / 10f);
+            float px = width / 2f - playersWidth / 2f + i * (playerSlotW + playerSlotW / 10f);
             DyeColor color = players.get(i).getColor();
             g.fill(Mth.floor(px), 28, Mth.ceil(px + playerSlotW), 40,
                     0x88000000 + color.getTextureDiffuseColor());
+            if (i < n - 1) {
+                g.fill(Mth.ceil(px + playerSlotW), 28,
+                        Mth.floor(px + playerSlotW + playerSlotW / 10f), 40, 0x88000000);
+            }
         }
         g.fill(0, 28, Mth.floor((width - playersWidth) / 2f), 40, 0x88000000);
         g.fill(width - Mth.floor((width - playersWidth) / 2f), 28, width, 40, 0x88000000);
 
-        // Per-player chip + status labels
         for (int i = 0; i < n; i++) {
-            float   px     = width / 2f - playersWidth / 2f + i * (playerSlotW + playerSlotW / 10f);
+            float px = width / 2f - playersWidth / 2f + i * (playerSlotW + playerSlotW / 10f);
             boolean fd     = menu.isFolded(i);
             boolean ai     = menu.isAllIn(i);
             boolean dealer = i == menu.getDealerIndex();
-            int     chips  = menu.getChips(i);
-            int     bet    = menu.getRoundBet(i);
+            int chips      = menu.getChips(i);
+            int bet        = menu.getRoundBet(i);
 
             String chipStr = fd ? "Fold" : ai ? "All-In" : chips + "♦";
-            if (dealer)         chipStr = "[D] " + chipStr;
-            if (bet > 0 && !fd) chipStr += " (" + bet + ")";
+            if (dealer)          chipStr = "[D] " + chipStr;
+            if (bet > 0 && !fd)  chipStr += "(" + bet + ")";
             int textColor = fd ? 0xAAAAAA : ai ? 0xFFD700 : 0xFFFFFF;
 
             g.pose().pushPose();
             g.pose().translate(px + 26f, 29f, 0f);
-            g.pose().scale(0.65f, 0.65f, 0.65f);
+            g.pose().scale(0.5f, 0.5f, 0.5f);
             g.drawString(font, chipStr, 0, 0, textColor, true);
             g.pose().popPose();
         }
